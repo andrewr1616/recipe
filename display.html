@@ -7,30 +7,31 @@
     <link rel="stylesheet" href="styles.css" />
     <style>
       .recipeContainer {
-        max-width: 600px;
+        max-width: 100%;
         margin: 50px auto;
+        display: grid;
+        grid-template-columns: repeat(
+          auto-fill,
+          minmax(200px, 1fr)
+        ); /* Adjust minimum width as needed */
+        gap: 20px; /* Adjust gap between items */
+        justify-items: center;
+      }
+
+      .recipe {
         background-color: #fff;
         padding: 20px;
         border-radius: 8px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       }
 
-      h1 {
-        text-align: center;
-        margin-bottom: 20px;
-      }
-
-      .recipeDetails {
-        margin-bottom: 20px;
-      }
-
-      .recipeDetails h2 {
-        margin-bottom: 10px;
+      .recipe h2 {
         font-size: 1.5rem;
         color: #007bff;
+        margin-bottom: 10px;
       }
 
-      .recipeDetails p {
+      .recipe p {
         margin-bottom: 5px;
       }
 
@@ -41,9 +42,9 @@
 
       .ingredientList h3,
       .instructionList h3 {
-        margin-bottom: 5px;
         font-size: 1.2rem;
         color: #28a745;
+        margin-bottom: 5px;
       }
 
       .ingredientList ul,
@@ -64,52 +65,50 @@
         color: #343a40;
       }
 
-      #goBackBtn {
-        width: 100%;
-        padding: 12px;
-        background-color: #007bff;
-        color: #fff;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        margin-top: 20px;
-      }
-
-      #goBackBtn:hover {
-        background-color: #0056b3;
-      }
-
       .deleteBtn {
-        display: block;
-        width: 100%;
-        padding: 12px;
+        padding: 8px;
         background-color: #dc3545;
         color: #fff;
         border: none;
         border-radius: 5px;
         cursor: pointer;
         margin-top: 10px;
+        font-size: 0.8rem;
       }
 
       .deleteBtn:hover {
         background-color: #c82333;
       }
+
+      #goBackBtn {
+        padding: 10px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 20px;
+        font-size: 0.9rem;
+      }
+
+      #goBackBtn:hover {
+        background-color: #0056b3;
+      }
     </style>
   </head>
   <body>
-    <div class="recipeContainer">
-      <h1>Recipe Details</h1>
-      <div class="recipeDetails" id="recipeDetails">
-        <!-- Recipe details will be dynamically added here -->
-      </div>
-      <button id="goBackBtn">Go Back to Add More Recipes</button>
+    <div class="recipeContainer" id="recipeContainer">
+      <!-- Recipes will be dynamically added here -->
     </div>
+    <button id="goBackBtn">Go Back to Add More Recipes</button>
     <script>
       const allRecipes = JSON.parse(localStorage.getItem("allRecipes"));
+      const recipeContainer = document.getElementById("recipeContainer");
 
       allRecipes.forEach((recipe, index) => {
-        const recipeDetails = document.createElement("div");
-        recipeDetails.innerHTML = `
+        const recipeElement = document.createElement("div");
+        recipeElement.classList.add("recipe");
+        recipeElement.innerHTML = `
                 <h2>${recipe.recipeName}</h2>
                 <div class="ingredientList">
                     <h3>Ingredients:</h3>
@@ -131,7 +130,7 @@
                 </div>
                 <button class="deleteBtn" data-index="${index}">Delete</button>
             `;
-        document.getElementById("recipeDetails").appendChild(recipeDetails);
+        recipeContainer.appendChild(recipeElement);
       });
 
       document
@@ -145,7 +144,7 @@
           const index = parseInt(this.getAttribute("data-index"));
           allRecipes.splice(index, 1);
           localStorage.setItem("allRecipes", JSON.stringify(allRecipes));
-          window.location.reload(); // Refresh the page to reflect the changes
+          window.location.reload();
         });
       });
     </script>
