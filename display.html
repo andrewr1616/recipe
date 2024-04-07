@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Recipe Display</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      .recipeContainer {
+        max-width: 600px;
+        margin: 50px auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .recipeDetails {
+        margin-bottom: 20px;
+      }
+
+      .recipeDetails h2 {
+        margin-bottom: 10px;
+        font-size: 1.5rem;
+        color: #007bff;
+      }
+
+      .recipeDetails p {
+        margin-bottom: 5px;
+      }
+
+      .ingredientList,
+      .instructionList {
+        margin-left: 20px;
+      }
+
+      .ingredientList h3,
+      .instructionList h3 {
+        margin-bottom: 5px;
+        font-size: 1.2rem;
+        color: #28a745;
+      }
+
+      .ingredientList ul,
+      .instructionList ol {
+        margin-bottom: 15px;
+      }
+
+      .ingredientList ul li,
+      .instructionList ol li {
+        list-style-type: square;
+      }
+
+      .ingredientList ul li {
+        color: #6c757d;
+      }
+
+      .instructionList ol li {
+        color: #343a40;
+      }
+
+      #goBackBtn {
+        width: 100%;
+        padding: 12px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 20px;
+      }
+
+      #goBackBtn:hover {
+        background-color: #0056b3;
+      }
+
+      .deleteBtn {
+        display: block;
+        width: 100%;
+        padding: 12px;
+        background-color: #dc3545;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+
+      .deleteBtn:hover {
+        background-color: #c82333;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="recipeContainer">
+      <h1>Recipe Details</h1>
+      <div class="recipeDetails" id="recipeDetails">
+        <!-- Recipe details will be dynamically added here -->
+      </div>
+      <button id="goBackBtn">Go Back to Add More Recipes</button>
+    </div>
+    <script>
+      const allRecipes = JSON.parse(localStorage.getItem("allRecipes"));
+
+      allRecipes.forEach((recipe, index) => {
+        const recipeDetails = document.createElement("div");
+        recipeDetails.innerHTML = `
+                <h2>${recipe.recipeName}</h2>
+                <div class="ingredientList">
+                    <h3>Ingredients:</h3>
+                    <ul>
+                        ${recipe.ingredients
+                          .split("\n")
+                          .map((ingredient) => `<li>${ingredient}</li>`)
+                          .join("")}
+                    </ul>
+                </div>
+                <div class="instructionList">
+                    <h3>Instructions:</h3>
+                    <ol>
+                        ${recipe.instructions
+                          .split("\n")
+                          .map((instruction) => `<li>${instruction}</li>`)
+                          .join("")}
+                    </ol>
+                </div>
+                <button class="deleteBtn" data-index="${index}">Delete</button>
+            `;
+        document.getElementById("recipeDetails").appendChild(recipeDetails);
+      });
+
+      document
+        .getElementById("goBackBtn")
+        .addEventListener("click", function () {
+          window.location.href = "index.html";
+        });
+
+      document.querySelectorAll(".deleteBtn").forEach((button) => {
+        button.addEventListener("click", function () {
+          const index = parseInt(this.getAttribute("data-index"));
+          allRecipes.splice(index, 1);
+          localStorage.setItem("allRecipes", JSON.stringify(allRecipes));
+          window.location.reload(); // Refresh the page to reflect the changes
+        });
+      });
+    </script>
+  </body>
+</html>
